@@ -1,7 +1,12 @@
 use std::{fs::File, io::BufRead, io::BufReader};
 
-pub fn main() {
+pub fn solve_day() {
     let file = File::open("inputs/day2.txt").unwrap();
+    assert_eq!(solve_file(file), 1931);
+    println!("pass")
+}
+fn solve_file(file: File) -> u32 {
+    println!("Solving day2a");
     let lines = BufReader::new(file).lines();
     let mut sum: u32 = 0;
     for (id, line) in lines.enumerate() {
@@ -30,4 +35,15 @@ pub fn main() {
         }
     }
     println!("{}", sum);
+    sum
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn solve_test() {
+        assert_eq!(solve_file(File::open("inputs/day2_test.txt").unwrap()), 8);
+        assert_eq!(solve_file(File::open("inputs/day2.txt").unwrap()), 1931)
+    }
 }

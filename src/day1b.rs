@@ -33,8 +33,13 @@ fn str_to_int_rev(capture: &str) -> u32 {
     }
 }
 
-pub fn main() {
+pub fn solve_day() {
     let file = File::open("inputs/day1.txt").unwrap();
+    assert_eq!(solve_file(file), 55291);
+    println!("pass")
+}
+fn solve_file(file: File) -> u32 {
+    println!("Solving day1b");
     let lines = BufReader::new(file).lines();
     let mut sum: u32 = 0;
     let re_first = Regex::new(
@@ -52,5 +57,19 @@ pub fn main() {
         let captures_last = re_last.captures(rev_line.as_str()).unwrap();
         sum += 10 * str_to_int(&captures_first["first"]) + str_to_int_rev(&captures_last["last"]);
     }
-    print!("{}", sum);
+    println!("{}", sum);
+    sum
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn solve_test() {
+        assert_eq!(
+            solve_file(File::open("inputs/day1b_test.txt").unwrap()),
+            281
+        );
+        assert_eq!(solve_file(File::open("inputs/day1.txt").unwrap()), 55291)
+    }
 }

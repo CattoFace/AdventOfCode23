@@ -1,7 +1,14 @@
-use std::{cmp, fs::File, io::BufRead, io::BufReader};
+use std::cmp;
+use std::{fs::File, io::BufRead, io::BufReader};
 
-pub fn main() {
+pub fn solve_day() {
     let file = File::open("inputs/day2.txt").unwrap();
+    assert_eq!(solve_file(file), 83105);
+    println!("pass")
+}
+
+fn solve_file(file: File) -> u32 {
+    println!("Solving day2b");
     let lines = BufReader::new(file).lines();
     let mut sum: u32 = 0;
     for line in lines {
@@ -9,7 +16,6 @@ pub fn main() {
             Ok(line) => line,
             Err(err) => panic!("Can't read line {}", err),
         };
-        println!("{}", &l);
         let split_line: Vec<&str> = l
             .split(&[' ', ',', ';'])
             .filter(|x| !x.is_empty())
@@ -27,7 +33,20 @@ pub fn main() {
             }
         });
         sum += min_red * min_green * min_blue;
-        println!("Red {}, Green {} Blue {}", min_red, min_green, min_blue);
     }
     println!("{}", sum);
+    sum
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn solve_test() {
+        assert_eq!(
+            solve_file(File::open("inputs/day2_test.txt").unwrap()),
+            2286
+        );
+        assert_eq!(solve_file(File::open("inputs/day2.txt").unwrap()), 83105);
+    }
 }
