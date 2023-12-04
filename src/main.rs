@@ -1,8 +1,5 @@
-pub mod day1a;
-pub mod day1b;
-pub mod day2a;
-pub mod day2b;
+mod day3b;
 
 fn main() {
-    day1b::solve_day();
+    println!("{}", day3b::solve_day());
 }

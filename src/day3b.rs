@@ -1,26 +1,31 @@
-use std::{cmp, collections::BTreeSet, fs::File, io::BufRead, io::BufReader};
+use std::{cmp, collections::BTreeMap, fs::File, io::BufRead, io::BufReader};
 
 pub fn solve_day() -> u32 {
     let file = File::open("inputs/day3.txt").unwrap();
     let ans = solve_file(file);
-    assert_eq!(ans, 519444);
+    assert_eq!(ans, 74528807);
     ans
 }
 
-fn valid_location(
+fn try_add_to_cog(
     l_index: usize,
     c_start: usize,
     num_len: usize,
-    symbol_loc: &BTreeSet<(usize, usize)>,
-) -> bool {
+    symbol_loc: &mut BTreeMap<(usize, usize), (u32, u32)>,
+    num: u32,
+) {
     for h in (cmp::max(1, l_index) - 1)..=(l_index + 1) {
         for w in (cmp::max(1, c_start) - 1)..(c_start + num_len + 1) {
-            if symbol_loc.contains(&(h, w)) {
-                return true;
+            if let Some((prod, count)) = symbol_loc.get_mut(&(h, w)) {
+                if *count <= 2 {
+                    *prod *= num;
+                    *count += 1;
+                } else {
+                    symbol_loc.remove(&(h, w));
+                }
             }
         }
     }
-    false
 }
 fn parse_to_end(to_parse: &str) -> Option<u32> {
     if to_parse.starts_with(|c: char| !c.is_ascii_digit()) {
@@ -35,20 +40,17 @@ fn parse_to_end(to_parse: &str) -> Option<u32> {
 }
 fn solve_file(file: File) -> u32 {
     let lines: Vec<String> = BufReader::new(file).lines().map_while(Result::ok).collect();
-    let symbol_locations: BTreeSet<(usize, usize)> = lines
+    let mut symbol_locations: BTreeMap<(usize, usize), (u32, u32)> = lines
         .iter()
         .enumerate()
         .flat_map(|(line_index, line)| {
             line.char_indices()
                 .filter_map(move |(char_index, c)| match c {
-                    '!' | '@' | '#' | '$' | '%' | '^' | '&' | '*' | '-' | '=' | '+' | '/' => {
-                        Some((line_index, char_index))
-                    }
+                    '*' => Some(((line_index, char_index), (1, 0))),
                     _ => None,
                 })
         })
         .collect();
-    let mut sum: u32 = 0;
     lines.iter().enumerate().for_each(|(line_index, line)| {
         let mut i = 0;
         while i < line.len() {
@@ -58,13 +60,14 @@ fn solve_file(file: File) -> u32 {
                 continue;
             };
             let num_len = format!("{}", res).len();
-            if valid_location(line_index, i, num_len, &symbol_locations) {
-                sum += res;
-            }
+            try_add_to_cog(line_index, i, num_len, &mut symbol_locations, res);
             i += num_len;
         }
     });
-    sum
+    symbol_locations.values().fold(
+        0,
+        |sum, (prod, count)| if *count == 2 { sum + prod } else { sum },
+    )
 }
 
 #[cfg(test)]
@@ -74,8 +77,8 @@ mod tests {
     fn solve_test() {
         assert_eq!(
             solve_file(File::open("inputs/day3_test.txt").unwrap()),
-            4361
+            467835
         );
-        assert_eq!(solve_file(File::open("inputs/day3.txt").unwrap()), 519444)
+        assert_eq!(solve_file(File::open("inputs/day3.txt").unwrap()), 74528807)
     }
 }

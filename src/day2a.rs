@@ -1,12 +1,12 @@
 use std::{fs::File, io::BufRead, io::BufReader};
 
-pub fn solve_day() {
+pub fn solve_day() -> u32 {
     let file = File::open("inputs/day2.txt").unwrap();
-    assert_eq!(solve_file(file), 1931);
-    println!("pass")
+    let ans = solve_file(file);
+    assert_eq!(ans, 1931);
+    ans
 }
 fn solve_file(file: File) -> u32 {
-    println!("Solving day2a");
     let lines = BufReader::new(file).lines();
     let mut sum: u32 = 0;
     for (id, line) in lines.enumerate() {
@@ -14,7 +14,6 @@ fn solve_file(file: File) -> u32 {
             Ok(line) => line,
             Err(err) => panic!("Can't read line {}", err),
         };
-        println!("{}", &l);
         let split_line: Vec<&str> = l
             .split(&[' ', ',', ';'])
             .filter(|x| !x.is_empty())
@@ -28,13 +27,9 @@ fn solve_file(file: File) -> u32 {
                 _ => count == "Game",
             }
         }) {
-            println!("game {} valid", id + 1);
             sum += (id + 1) as u32;
-        } else {
-            println!("Game {} invalid", id + 1);
         }
     }
-    println!("{}", sum);
     sum
 }
 

@@ -1,14 +1,14 @@
 use std::cmp;
 use std::{fs::File, io::BufRead, io::BufReader};
 
-pub fn solve_day() {
+pub fn solve_day() -> u32 {
     let file = File::open("inputs/day2.txt").unwrap();
-    assert_eq!(solve_file(file), 83105);
-    println!("pass")
+    let ans = solve_file(file);
+    assert_eq!(ans, 83105);
+    ans
 }
 
 fn solve_file(file: File) -> u32 {
-    println!("Solving day2b");
     let lines = BufReader::new(file).lines();
     let mut sum: u32 = 0;
     for line in lines {
@@ -34,7 +34,6 @@ fn solve_file(file: File) -> u32 {
         });
         sum += min_red * min_green * min_blue;
     }
-    println!("{}", sum);
     sum
 }
 

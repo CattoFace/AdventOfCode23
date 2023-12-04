@@ -1,26 +1,25 @@
 use std::{fs::File, io::BufRead, io::BufReader};
 
-pub fn solve_day() {
+pub fn solve_day() -> u32 {
     let file = File::open("inputs/day1.txt").unwrap();
-    assert_eq!(solve_file(file), 55607);
-    println!("pass")
+    let ans = solve_file(file);
+    assert_eq!(ans, 55607);
+    ans
 }
 fn solve_file(file: File) -> u32 {
-    println!("Solving day1a");
     let lines = BufReader::new(file).lines();
-    let mut sum: u32 = 0;
-    for line in lines {
-        let unwrapped_line = line.unwrap();
-        let first = unwrapped_line.chars().find_map(|x| x.to_digit(10)).unwrap();
-        let last = unwrapped_line
-            .chars()
-            .rev()
-            .find_map(|x| x.to_digit(10))
-            .unwrap();
-        sum += first * 10 + last;
-    }
-    println!("{}", sum);
-    sum
+    lines
+        .map(|line| {
+            let unwrapped_line = line.unwrap();
+            let first = unwrapped_line.chars().find_map(|x| x.to_digit(10)).unwrap();
+            let last = unwrapped_line
+                .chars()
+                .rev()
+                .find_map(|x| x.to_digit(10))
+                .unwrap();
+            first * 10 + last
+        })
+        .sum()
 }
 
 #[cfg(test)]
