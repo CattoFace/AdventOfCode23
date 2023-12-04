@@ -13,11 +13,22 @@ fn valid_location(
     num_len: usize,
     symbol_loc: &BTreeSet<(usize, usize)>,
 ) -> bool {
-    for h in (cmp::max(1, l_index) - 1)..=(l_index + 1) {
+    if l_index >= 1 {
         for w in (cmp::max(1, c_start) - 1)..(c_start + num_len + 1) {
-            if symbol_loc.contains(&(h, w)) {
+            if symbol_loc.contains(&(l_index - 1, w)) {
                 return true;
             }
+        }
+    }
+    if c_start >= 1 && symbol_loc.contains(&(l_index, c_start - 1)) {
+        return true;
+    }
+    if symbol_loc.contains(&(l_index, c_start + num_len)) {
+        return true;
+    }
+    for w in (cmp::max(1, c_start) - 1)..(c_start + num_len + 1) {
+        if symbol_loc.contains(&(l_index + 1, w)) {
+            return true;
         }
     }
     false

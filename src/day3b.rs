@@ -14,15 +14,43 @@ fn try_add_to_cog(
     symbol_loc: &mut BTreeMap<(usize, usize), (u32, u32)>,
     num: u32,
 ) {
-    for h in (cmp::max(1, l_index) - 1)..=(l_index + 1) {
+    if l_index >= 1 {
         for w in (cmp::max(1, c_start) - 1)..(c_start + num_len + 1) {
-            if let Some((prod, count)) = symbol_loc.get_mut(&(h, w)) {
+            if let Some((prod, count)) = symbol_loc.get_mut(&(l_index - 1, w)) {
                 if *count <= 2 {
                     *prod *= num;
                     *count += 1;
                 } else {
-                    symbol_loc.remove(&(h, w));
+                    symbol_loc.remove(&(l_index - 1, w));
                 }
+            }
+        }
+    }
+    if c_start >= 1 {
+        if let Some((prod, count)) = symbol_loc.get_mut(&(l_index, c_start - 1)) {
+            if *count <= 2 {
+                *prod *= num;
+                *count += 1;
+            } else {
+                symbol_loc.remove(&(l_index, c_start - 1));
+            }
+        }
+    }
+    if let Some((prod, count)) = symbol_loc.get_mut(&(l_index, c_start + num_len)) {
+        if *count <= 2 {
+            *prod *= num;
+            *count += 1;
+        } else {
+            symbol_loc.remove(&(l_index, c_start + num_len + 1));
+        }
+    }
+    for w in (cmp::max(1, c_start) - 1)..(c_start + num_len + 1) {
+        if let Some((prod, count)) = symbol_loc.get_mut(&(l_index + 1, w)) {
+            if *count <= 2 {
+                *prod *= num;
+                *count += 1;
+            } else {
+                symbol_loc.remove(&(l_index + 1, w));
             }
         }
     }
