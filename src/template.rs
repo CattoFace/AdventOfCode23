@@ -1,12 +1,12 @@
 use std::{fs::File, io::BufRead, io::BufReader};
 
-pub fn solve_day() {
+pub fn solve_day() -> u32 {
     let file = File::open("inputs/dayX.txt").unwrap();
-    assert_eq!(solve_file(file), 0);
-    println!("pass")
+    let ans = solve_file(file);
+    assert_eq!(ans, 0);
+    ans
 }
 fn solve_file(file: File) -> u32 {
-    println!("Solving dayXx");
     let lines = BufReader::new(file).lines();
     // write solution
     sum
@@ -18,6 +18,6 @@ mod tests {
     #[test]
     fn solve_test() {
         assert_eq!(solve_file(File::open("inputs/dayXx_test.txt").unwrap()), 0);
-        assert_eq!(solve_file(File::open("inputs/dayX.txt").unwrap()), 0)
+        assert_eq!(solve_file(File::open("inputs/dayX.txt").unwrap()), 0);
     }
 }
