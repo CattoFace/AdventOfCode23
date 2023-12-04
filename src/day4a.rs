@@ -3,7 +3,7 @@ use std::{collections::BTreeSet, fs::File, io::BufRead, io::BufReader};
 pub fn solve_day() -> u32 {
     let file = File::open("inputs/day4.txt").unwrap();
     let ans = solve_file(file);
-    assert_eq!(ans, 0);
+    assert_eq!(ans, 19855);
     ans
 }
 fn solve_file(file: File) -> u32 {
