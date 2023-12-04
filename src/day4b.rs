@@ -1,4 +1,4 @@
-use std::{collections::BTreeSet, fs::File, io::BufRead, io::BufReader};
+use std::{collections::HashSet, fs::File, io::BufRead, io::BufReader};
 
 pub fn solve_day() -> u32 {
     let file = File::open("inputs/day4.txt").unwrap();
@@ -15,7 +15,7 @@ struct Game {
 fn parse_game(game: &str) -> Game {
     let (_line_start, game) = game.split_once(':').unwrap();
     let (winning, available) = game.split_once('|').unwrap();
-    let winning_nums: BTreeSet<u32> = winning
+    let winning_nums: HashSet<u32> = winning
         .split_whitespace()
         .map(|s| s.parse::<u32>().unwrap())
         .collect();
