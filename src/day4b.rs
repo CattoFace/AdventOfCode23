@@ -31,12 +31,14 @@ fn parse_game(game: &str) -> Game {
 fn solve_file(file: File) -> u32 {
     let lines = BufReader::new(file).lines();
     let mut games: Vec<Game> = lines.map(|line| parse_game(&line.unwrap())).collect();
+    let mut sum: u32 = 0;
     for index in 0..games.len() {
+        sum += games[index].count;
         for i in 1usize..=games[index].winnings as usize {
             games[index + i].count += games[index].count;
         }
     }
-    games.iter().map(|game| game.count).sum()
+    sum
 }
 
 #[cfg(test)]
