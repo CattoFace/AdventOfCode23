@@ -17,7 +17,7 @@ mod tests {
     use super::*;
     #[test]
     fn solve_test() {
-        assert_eq!(solve_file(File::open("inputs/dayXx_test.txt").unwrap()), 0);
+        assert_eq!(solve_file(File::open("inputs/dayX_test.txt").unwrap()), 0);
         assert_eq!(solve_file(File::open("inputs/dayX.txt").unwrap()), 0);
     }
 }
