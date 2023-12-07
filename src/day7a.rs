@@ -18,7 +18,7 @@ enum HandType {
 }
 #[derive(Debug)]
 struct Hand {
-    cards: Vec<u8>,
+    cards: [u8; 5],
     hand_type: HandType,
     bid: u32,
 }
@@ -30,7 +30,8 @@ impl PartialEq for Hand {
 }
 impl Hand {
     pub fn new(cards_str: &str, bid: u32) -> Self {
-        let cards: Vec<u8> = cards_str
+        let mut cards = [0u8; 5];
+        cards_str
             .chars()
             .map(|c| match c {
                 'A' => 12,
@@ -48,7 +49,8 @@ impl Hand {
                 '2' => 0,
                 _ => 13,
             })
-            .collect();
+            .enumerate()
+            .for_each(|(i, v)| cards[i] = v);
         let hand_type = rate_hand(&cards);
         Self {
             cards,
