@@ -1,4 +1,4 @@
-use std::{collections::BTreeSet, fs::read_to_string};
+use std::fs::read_to_string;
 
 use itertools::Itertools;
 
@@ -10,10 +10,10 @@ fn solve_file(text: String) -> usize {
     let height = text.len() / (width + 1);
     // find rows and columns that expand
     let mut columns_counts = vec![0usize; width];
-    let expanded_rows: BTreeSet<usize> = text
+    let expanded_rows: Vec<bool> = text
         .lines()
         .enumerate()
-        .filter(|(_, l)| {
+        .map(|(_, l)| {
             l.chars()
                 .enumerate()
                 .inspect(|(j, c)| {
@@ -25,13 +25,11 @@ fn solve_file(text: String) -> usize {
                 .count()
                 == width
         })
-        .map(|(i, _)| i)
         .collect();
-    let expanded_columns: BTreeSet<usize> = columns_counts
+    let expanded_columns: Vec<bool> = columns_counts
         .iter()
         .enumerate()
-        .filter(|(_, &count)| count == height)
-        .map(|(i, _)| i)
+        .map(|(_, &count)| count == height)
         .collect();
     // register all galaxies after expansion
     let mut row_offset = 0usize;
@@ -40,14 +38,14 @@ fn solve_file(text: String) -> usize {
         .enumerate()
         .flat_map(|(mut i, l)| {
             let mut column_offset = 0usize;
-            if expanded_rows.contains(&i) {
+            if expanded_rows[i] {
                 row_offset += 1;
             }
             i += row_offset;
             l.chars()
                 .enumerate()
                 .filter_map(|(j, c)| {
-                    if expanded_columns.contains(&j) {
+                    if expanded_columns[j] {
                         column_offset += 1;
                     }
                     if c == '#' {
