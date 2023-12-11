@@ -1,8 +1,7 @@
 use std::{fmt, fs::read_to_string};
 
 pub fn solve_day() -> u32 {
-    let text = read_to_string("inputs/day10.txt").unwrap();
-    solve_file(text)
+    solve_file(read_to_string("inputs/day10.txt").unwrap())
 }
 
 fn coords2index(x: usize, y: usize, width: usize) -> usize {
@@ -250,27 +249,18 @@ fn solve_file(mut text: String) -> u32 {
     //     )
     //     .unwrap()
     // );
-
+    //
     pmap.values
         .iter()
-        .fold(
-            (0u32, false, Direction::Right),
-            |(count, inside, from): (u32, bool, Direction), &c: &u8| {
-                let v = c + 1;
-                // println!("{},{}", v as char, inside);
-                match (v, from) {
-                    (b'F', _) => (count, !inside, Direction::Up),
-                    (b'L', _) => (count, !inside, Direction::Down),
-                    (b'J', Direction::Up) => (count, inside, from),
-                    (b'J', Direction::Down) => (count, !inside, from),
-                    (b'7', Direction::Up) => (count, !inside, from),
-                    (b'7', Direction::Down) => (count, inside, from),
-                    (b'-', _) => (count, inside, from),
-                    (b'|', _) => (count, !inside, from),
-                    _ => (count + inside as u32, inside, from),
-                }
-            },
-        )
+        .fold((0u32, false), |(count, inside): (u32, bool), &c: &u8| {
+            let v = c + 1;
+            // println!("{},{}", v as char, inside);
+            match v {
+                b'F' | b'7' | b'|' => (count, !inside),
+                b'L' | b'J' | b'-' => (count, inside),
+                _ => (count + inside as u32, inside),
+            }
+        })
         .0
 }
 

@@ -1,5 +1,5 @@
 #![feature(float_next_up_down)]
-mod day10b;
+mod day11b;
 
 #[cfg(feature = "dhat-heap")]
 #[global_allocator]
@@ -11,5 +11,5 @@ fn main() {
     // }
     #[cfg(feature = "dhat-heap")]
     let _profiler = dhat::Profiler::new_heap();
-    println!("{}", day10b::solve_day());
+    println!("{}", day11b::solve_day());
 }

@@ -1,6 +1,8 @@
 #![feature(float_next_up_down)]
 pub mod day10a;
 pub mod day10b;
+pub mod day11a;
+pub mod day11b;
 pub mod day1a;
 pub mod day1b;
 pub mod day2a;
