@@ -2,8 +2,7 @@ use std::{fs::File, io::BufRead, io::BufReader};
 
 pub fn solve_day() -> u32 {
     let file = File::open("inputs/dayX.txt").unwrap();
-    let ans = solve_file(file);
-    ans
+    solve_file(file)
 }
 fn solve_file(file: File) -> u32 {
     let lines = BufReader::new(file).lines();
