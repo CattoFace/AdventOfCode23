@@ -68,6 +68,9 @@ mod tests {
             solve_file(read_to_string("inputs/day12_test.txt").unwrap()),
             21
         );
-        assert_eq!(solve_file(read_to_string("inputs/day12.txt").unwrap()), 0);
+        assert_eq!(
+            solve_file(read_to_string("inputs/day12.txt").unwrap()),
+            7622
+        );
     }
 }
