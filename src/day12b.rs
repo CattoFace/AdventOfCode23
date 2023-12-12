@@ -1,6 +1,7 @@
 use std::{collections::HashMap, fs::read_to_string};
 
 use itertools::Itertools;
+use rayon::{iter::ParallelIterator, str::ParallelString};
 
 pub fn solve_day() -> u64 {
     solve_file(read_to_string("inputs/day12.txt").unwrap())
@@ -55,9 +56,8 @@ fn count_options(
     out
 }
 fn solve_file(text: String) -> u64 {
-    text.lines()
+    text.par_lines()
         .map(|l| {
-            let mut cache: HashMap<(usize, usize, u8, u64, bool), u64> = HashMap::new();
             let (values_str, nums_str) = l.split_once(' ').unwrap();
             let mut new_values_str = String::from(values_str);
             new_values_str.push('?');
@@ -83,6 +83,8 @@ fn solve_file(text: String) -> u64 {
                 .collect_vec();
             // let mut values_string = values_str.to_string();
             let values_arr = unsafe { new_values_str.as_bytes_mut() };
+            let mut cache: HashMap<(usize, usize, u8, u64, bool), u64> =
+                HashMap::with_capacity(new_nums_str.len() * values_arr.len());
             count_options(&mut cache, values_arr, &mut nums, false)
         })
         .sum()

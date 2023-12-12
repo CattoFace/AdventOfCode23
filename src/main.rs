@@ -11,5 +11,9 @@ fn main() {
     // }
     #[cfg(feature = "dhat-heap")]
     let _profiler = dhat::Profiler::new_heap();
+    // let mut ans = 0u64;
+    // for _ in 0..100 {
+    // ans = day12b::solve_day()
+    // }
     println!("{}", day12b::solve_day());
 }

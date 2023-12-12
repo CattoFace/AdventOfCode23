@@ -1,6 +1,7 @@
 use std::fs::read_to_string;
 
 use itertools::Itertools;
+use rayon::{iter::ParallelIterator, str::ParallelString};
 
 pub fn solve_day() -> u32 {
     solve_file(read_to_string("inputs/day12.txt").unwrap())
@@ -44,7 +45,7 @@ fn count_options(line: &mut [u8], nums: &mut [u32], active: bool) -> u32 {
     }
 }
 fn solve_file(text: String) -> u32 {
-    text.lines()
+    text.par_lines()
         .map(|l| {
             let (values_str, nums_str) = l.split_once(' ').unwrap();
             let mut nums = nums_str
