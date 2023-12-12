@@ -1,9 +1,9 @@
 use std::fs::read_to_string;
 
 pub fn solve_day() -> u32 {
-    solve_file(read_to_string("inputs/dayX.txt").unwrap())
+    solve_file(read_to_string("inputs/dayX_test.txt").unwrap())
 }
-fn solve_file(Text: String) -> u32 {
+fn solve_file(text: String) -> u32 {
     // write solution
     sum
 }
