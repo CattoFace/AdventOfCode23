@@ -19,3 +19,17 @@ harness = false
 
 [features]
 dhat-heap = []
+
+
+[profile.max]
+inherits = "release"
+codegen-units = 1
+lto = true
+
+[profile.bench]
+codegen-units = 1
+lto = true
+
+[profile.dhat]
+inherits = "release"
+debug = true
