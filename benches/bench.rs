@@ -28,7 +28,7 @@ fn criterion_benchmark(c: &mut Criterion) {
     // c.bench_function("day11a", |b| b.iter(day11a::solve_day));
     // c.bench_function("day11b", |b| b.iter(day11b::solve_day));
     // c.bench_function("day12a", |b| b.iter(day12a::solve_day));
-    // c.bench_function("day12b", |b| b.iter(day12b::solve_day));
+    // c.bench_function("day13b", |b| b.iter(day12b::solve_day));
     c.bench_function("day13a", |b| b.iter(day13a::solve_day));
     c.bench_function("day13b", |b| b.iter(day13b::solve_day));
 }
