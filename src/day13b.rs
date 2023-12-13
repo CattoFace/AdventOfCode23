@@ -1,6 +1,5 @@
 use std::fs::read_to_string;
 
-use itertools::Itertools;
 use rayon::prelude::{ParallelBridge, ParallelIterator};
 
 pub fn solve_day() -> u32 {
@@ -15,12 +14,13 @@ fn process_pattern(pattern: &str) -> u32 {
     if pattern.is_empty() {
         return 0;
     }
-    let lines = pattern.lines().collect_vec();
+    let width = pattern.find('\n').unwrap();
+    let height = pattern.len() / (width + 1) + 1;
+    let mut lines = Vec::<&str>::with_capacity(height);
+    pattern.lines().for_each(|l| lines.push(l));
     if pattern.is_empty() {
         return 0;
     }
-    let width = pattern.find('\n').unwrap();
-    let height = pattern.len() / (width + 1) + 1;
     // check every possible column mirror
     if let Some(col_mirror) = (1..width).position(|index| {
         // check every line matches the column mirror

@@ -8,9 +8,10 @@ static ALLOC: dhat::Alloc = dhat::Alloc;
 fn main() {
     #[cfg(feature = "dhat-heap")]
     let _profiler = dhat::Profiler::new_heap();
-    // let mut ans = 0u64;
-    // for _ in 0..100 {
-    // ans = day13b::solve_day()
-    // }
+    let mut ans = 0u32;
+    for _ in 0..10000 {
+        ans = day13b::solve_day()
+    }
+    dbg!(&ans);
     println!("{}", day13b::solve_day());
 }
