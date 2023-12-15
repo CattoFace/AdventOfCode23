@@ -60,7 +60,7 @@ mod tests {
         );
         assert_eq!(
             solve_file(read_to_string("inputs/day15.txt").unwrap()),
-            516469
+            221627
         );
     }
 }
