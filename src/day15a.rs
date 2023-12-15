@@ -5,11 +5,12 @@ pub fn solve_day() -> u32 {
 }
 fn solve_file(text: String) -> u32 {
     let text = text.as_bytes();
+    let text = &text[..text.len() - 1];
     let mut sum = 0u32;
     let mut hash = 0u8;
     text.iter().for_each(|&c| match c {
-        // split hashes o , or line feed
-        b',' | 10 => {
+        // split hashes o ,
+        b',' => {
             sum += hash as u32;
             hash = 0;
         }
@@ -19,7 +20,7 @@ fn solve_file(text: String) -> u32 {
         }
     });
     // add last hash
-    sum
+    sum + hash as u32
 }
 
 #[cfg(test)]
