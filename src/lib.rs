@@ -1,4 +1,5 @@
 #![feature(float_next_up_down)]
+#![feature(linked_list_remove)]
 pub mod day10a;
 pub mod day10b;
 pub mod day11a;
@@ -9,6 +10,8 @@ pub mod day13a;
 pub mod day13b;
 pub mod day14a;
 pub mod day14b;
+pub mod day15a;
+pub mod day15b;
 pub mod day1a;
 pub mod day1b;
 pub mod day2a;
