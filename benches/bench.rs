@@ -1,9 +1,9 @@
 use std::time::Duration;
 
 use aoc23::{
-    day10a, day10b, day11a, day11b, day12a, day12b, day13a, day13b, day1a, day1b, day2a, day2b,
-    day3a, day3b, day4a, day4b, day5a, day5b, day6a, day6b, day7a, day7b, day8a, day8b, day9a,
-    day9b,
+    day10a, day10b, day11a, day11b, day12a, day12b, day13a, day13b, day14a, day14b, day1a, day1b,
+    day2a, day2b, day3a, day3b, day4a, day4b, day5a, day5b, day6a, day6b, day7a, day7b, day8a,
+    day8b, day9a, day9b,
 };
 use criterion::{criterion_group, criterion_main, Criterion};
 fn criterion_benchmark(c: &mut Criterion) {
@@ -31,13 +31,15 @@ fn criterion_benchmark(c: &mut Criterion) {
     // c.bench_function("day11b", |b| b.iter(day11b::solve_day));
     // c.bench_function("day12a", |b| b.iter(day12a::solve_day));
     // c.bench_function("day13b", |b| b.iter(day12b::solve_day));
-    c.bench_function("day13a", |b| b.iter(day13a::solve_day));
-    c.bench_function("day13b", |b| b.iter(day13b::solve_day));
+    // c.bench_function("day13a", |b| b.iter(day13a::solve_day));
+    // c.bench_function("day13b", |b| b.iter(day13b::solve_day));
+    c.bench_function("day14a", |b| b.iter(day14a::solve_day));
+    c.bench_function("day14b", |b| b.iter(day14b::solve_day));
 }
 
 criterion_group! {
     name = benches;
-    config=Criterion::default().measurement_time(Duration::from_secs(30));
+    config=Criterion::default().measurement_time(Duration::from_secs(10));
     targets = criterion_benchmark
 }
 criterion_main!(benches);

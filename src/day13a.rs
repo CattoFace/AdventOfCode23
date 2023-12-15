@@ -4,7 +4,7 @@ pub fn solve_day() -> u32 {
     solve_file(read_to_string("inputs/day13.txt").unwrap())
 }
 
-fn split_equal(line: &str, pos: usize) -> (&str, &str) {
+fn split_equal(line: &[u8], pos: usize) -> (&[u8], &[u8]) {
     let size = pos.min(line.len() - pos);
     (&line[(pos - size)..pos], &line[pos..(pos + size)])
 }
@@ -13,6 +13,7 @@ fn process_pattern(pattern: &str) -> u32 {
         return 0;
     }
     let width = pattern.find('\n').unwrap() + 1;
+    let pattern = pattern.as_bytes();
     let height = (pattern.len() + 1) / width;
     // check every possible column mirror
     if let Some(col_mirror) = (1..(width - 1)).position(|mirror_index| {
@@ -20,7 +21,7 @@ fn process_pattern(pattern: &str) -> u32 {
         (0..height).all(|line_index| {
             let line = &pattern[(width * line_index)..(width * (line_index + 1) - 1)];
             let (left, right) = split_equal(line, mirror_index);
-            left.bytes().zip(right.bytes().rev()).all(|(a, b)| a == b)
+            left.iter().zip(right.iter().rev()).all(|(a, b)| a == b)
         })
     }) {
         return col_mirror as u32 + 1;

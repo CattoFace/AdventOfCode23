@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 criterion = "0.5.1"
 dhat = "0.3.2"
+indicatif = "0.17.7"
 itertools = "0.12.0"
 num = "0.4.1"
 rayon = "1.8.0"
