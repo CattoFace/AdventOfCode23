@@ -13,7 +13,6 @@ enum Direction {
     Left,
     Right,
 }
-
 fn ray(
     text: &mut [u8],
     width: usize,
@@ -135,7 +134,7 @@ fn solve_file(text: String) -> u32 {
     let text: &mut [u8] = binding.as_mut();
     let width = text.iter().position(|&c| c == b'\n').unwrap() + 1;
     let height = text.len() / width;
-    let col_max = (0..(width - 1))
+    (0..(width - 1))
         .into_par_iter()
         .map(|col_idx| {
             ray(
@@ -155,11 +154,7 @@ fn solve_file(text: String) -> u32 {
                 Direction::Up,
             ))
         })
-        .max()
-        .unwrap();
-    let row_max = (0..height)
-        .into_par_iter()
-        .map(|row_idx| {
+        .chain((0..height).into_par_iter().map(|row_idx| {
             ray(
                 &mut text.iter().cloned().collect_vec(),
                 width,
@@ -176,10 +171,9 @@ fn solve_file(text: String) -> u32 {
                 row_idx,
                 Direction::Left,
             ))
-        })
+        }))
         .max()
-        .unwrap();
-    row_max.max(col_max)
+        .unwrap()
 }
 
 #[cfg(test)]
