@@ -1,24 +1,21 @@
 use bitvec::prelude::*;
 use colored::Colorize;
 use std::{collections::BinaryHeap, fs::read_to_string};
-pub fn solve_day() -> u32 {
+pub fn solve_day() -> u16 {
     solve_file(read_to_string("inputs/day17.txt").unwrap())
 }
 #[derive(Debug, PartialEq, Eq, Copy, Clone, Hash)]
-enum Direction {
-    Up,
-    Down,
-    Left,
-    Right,
+enum Axis {
+    Horizontal,
+    Vertical,
 }
 
 #[derive(PartialEq, Eq, Debug)]
 struct DistrictMove {
     x: u8,
     y: u8,
-    cost: u32,
-    direction: Direction,
-    move_length: u8,
+    cost: u16,
+    axis: Axis,
 }
 
 impl Ord for DistrictMove {
@@ -32,39 +29,6 @@ impl PartialOrd for DistrictMove {
     }
 }
 
-fn next_district(
-    text: &[u8],
-    curr_district: &DistrictMove,
-    direction: Direction,
-    width: u8,
-) -> DistrictMove {
-    let mut x = curr_district.x;
-    let mut y = curr_district.y;
-    match direction {
-        Direction::Up => y -= 1,
-        Direction::Down => y += 1,
-        Direction::Left => x -= 1,
-        Direction::Right => x += 1,
-    }
-    // println!(
-    //     "{},{},{}",
-    //     text[(x + y * (width + 1)) as usize] as char,
-    //     x,
-    //     y
-    // );
-    DistrictMove {
-        x,
-        y,
-        cost: curr_district.cost
-            + (text[(x as u32 + y as u32 * (width + 1) as u32) as usize] - b'0') as u32,
-        direction,
-        move_length: if curr_district.direction == direction {
-            curr_district.move_length + 1
-        } else {
-            1
-        },
-    }
-}
 #[allow(dead_code)]
 fn print_grid(text: &[u8], index: usize) {
     println!();
@@ -77,75 +41,100 @@ fn print_grid(text: &[u8], index: usize) {
     });
     println!();
 }
-fn solve_file(text: String) -> u32 {
-    use Direction::*;
+fn solve_file(text: String) -> u16 {
+    use Axis::*;
     let text = text.as_bytes();
     let width = text.iter().position(|&c| c == b'\n').unwrap() as u8;
-    let height = (text.len() as u32 / (width + 1) as u32) as u8;
-    let mut visited = bitvec![0;text.len() * 4 * 3]; // 4 directions, 4 move_lengths
+    let height = (text.len() as u16 / (width + 1) as u16) as u8;
+    let mut visited = bitvec![0;text.len()*2]; // 2 axis
     let mut queue = BinaryHeap::<DistrictMove>::new();
     queue.push(DistrictMove {
         x: 0,
-        y: 1,
-        cost: (text[(width + 1) as usize] - b'0') as u32,
-        direction: Down,
-        move_length: 1,
+        y: 0,
+        cost: 0,
+        axis: Vertical,
     });
     queue.push(DistrictMove {
-        x: 1,
+        x: 0,
         y: 0,
-        cost: (text[1] - b'0') as u32,
-        direction: Right,
-        move_length: 1,
+        cost: 0,
+        axis: Horizontal,
     });
     loop {
         let curr_district = queue.pop().unwrap();
-        let index = (curr_district.x as u32
-            + curr_district.y as u32 * (width + 1) as u32
-            + curr_district.direction as u32 * text.len() as u32
-            + (curr_district.move_length-1) as u32 * text.len() as u32 * 4)
-            as usize;
-        if visited[index] {
-            // println!("thrown {},{}", curr_district.x, curr_district.y);
-            // let mut s = String::new();
-            // std::io::stdin().read_line(&mut s);
-            continue;
-        }
-        visited.set(index, true);
-        if curr_district.x == width - 1 && curr_district.y == height - 1 {
-            return curr_district.cost;
-        }
-        if curr_district.y != 0
-            && !matches!(curr_district.direction, Down)
-            && (!matches!(curr_district.direction, Up) || curr_district.move_length < 3)
-        {
-            queue.push(next_district(text, &curr_district, Up, width));
-        }
-        if curr_district.y != height - 1
-            && !matches!(curr_district.direction, Up)
-            && (!matches!(curr_district.direction, Down) || curr_district.move_length < 3)
-        {
-            queue.push(next_district(text, &curr_district, Down, width));
-        }
-        if curr_district.x != 0
-            && !matches!(curr_district.direction, Right)
-            && (!matches!(curr_district.direction, Left) || curr_district.move_length < 3)
-        {
-            queue.push(next_district(text, &curr_district, Left, width));
-        }
-        if curr_district.x != width - 1
-            && !matches!(curr_district.direction, Left)
-            && (!matches!(curr_district.direction, Right) || curr_district.move_length < 3)
-        {
-            queue.push(next_district(text, &curr_district, Right, width));
-        }
-        // print_grid(
-        //     text,
-        //     (curr_district.x + curr_district.y * (width + 1)) as usize,
-        // );
+        let index = curr_district.x as usize + curr_district.y as usize * (width + 1) as usize;
+        let visited_index = index + curr_district.axis as usize * text.len();
+        // print_grid(text, index);
         // println!("{:?}", queue);
         // let mut s = String::new();
         // std::io::stdin().read_line(&mut s);
+        if visited[visited_index] {
+            continue;
+        }
+        visited.set(visited_index, true);
+        if curr_district.x == width - 1 && curr_district.y == height - 1 {
+            return curr_district.cost;
+        }
+        if !matches!(curr_district.axis, Horizontal) {
+            let mut cost = curr_district.cost;
+            for jump in 1u8..=3u8 {
+                if curr_district.y >= jump {
+                    cost += (text[index - jump as usize * (width as usize + 1)] - b'0') as u16;
+                    queue.push(DistrictMove {
+                        x: curr_district.x,
+                        y: curr_district.y - jump,
+                        cost,
+                        axis: Horizontal,
+                    });
+                } else {
+                    break;
+                }
+            }
+            let mut cost = curr_district.cost;
+            for jump in 1u8..=3u8 {
+                if curr_district.y + jump < height {
+                    cost += (text[index + jump as usize * (width as usize + 1)] - b'0') as u16;
+                    queue.push(DistrictMove {
+                        x: curr_district.x,
+                        y: curr_district.y + jump,
+                        cost,
+                        axis: Horizontal,
+                    });
+                } else {
+                    break;
+                }
+            }
+        }
+        if !matches!(curr_district.axis, Vertical) {
+            let mut cost = curr_district.cost;
+            for jump in 1u8..=3u8 {
+                if curr_district.x >= jump {
+                    cost += (text[index - jump as usize] - b'0') as u16;
+                    queue.push(DistrictMove {
+                        x: curr_district.x - jump,
+                        y: curr_district.y,
+                        cost,
+                        axis: Vertical,
+                    });
+                } else {
+                    break;
+                }
+            }
+            let mut cost = curr_district.cost;
+            for jump in 1u8..=3u8 {
+                if curr_district.x + jump < width {
+                    cost += (text[index + jump as usize] - b'0') as u16;
+                    queue.push(DistrictMove {
+                        x: curr_district.x + jump,
+                        y: curr_district.y,
+                        cost,
+                        axis: Vertical,
+                    });
+                } else {
+                    break;
+                }
+            }
+        }
     }
 }
 
@@ -156,8 +145,11 @@ mod tests {
     fn solve_test() {
         assert_eq!(
             solve_file(read_to_string("inputs/day17_test.txt").unwrap()),
-            102
+            94
         );
-        assert_eq!(solve_file(read_to_string("inputs/day17.txt").unwrap()), 936);
+        assert_eq!(
+            solve_file(read_to_string("inputs/day17.txt").unwrap()),
+            1157
+        );
     }
 }
