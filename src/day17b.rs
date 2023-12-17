@@ -5,7 +5,7 @@ pub fn solve_day() -> u16 {
     solve_file(read_to_string("inputs/day17.txt").unwrap())
 }
 #[derive(Debug, PartialEq, Eq, Copy, Clone, Hash)]
-enum Direction {
+enum Axis {
     Horizontal,
     Vertical,
 }
@@ -14,19 +14,7 @@ enum Direction {
 struct DistrictMove {
     x: u8,
     y: u8,
-    cost: u16,
-    direction: Direction,
-}
-
-impl Ord for DistrictMove {
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        other.cost.cmp(&self.cost)
-    }
-}
-impl PartialOrd for DistrictMove {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
+    axis: Axis,
 }
 
 #[allow(dead_code)]
@@ -41,60 +29,64 @@ fn print_grid(text: &[u8], index: usize) {
     });
     println!();
 }
-
 #[derive(Debug)]
-struct MyHeap {
+struct MyBucketQueue {
     start: u16,
     heap: Vec<Vec<DistrictMove>>,
 }
-impl MyHeap {
-    fn new() -> MyHeap {
-        MyHeap {
+impl MyBucketQueue {
+    fn new() -> MyBucketQueue {
+        MyBucketQueue {
             heap: Vec::new(),
             start: 0,
         }
     }
-    fn push(&mut self, district: DistrictMove) {
-        if (self.heap.len() as u16) < district.cost + 1 {
-            self.heap.resize_with(district.cost as usize + 1, Vec::new)
+    fn push(&mut self, district: DistrictMove, cost: u16) {
+        if (self.heap.len() as u16) < cost + 1 {
+            self.heap.resize_with(cost as usize + 1, Vec::new)
         }
-        self.start = self.start.min(district.cost);
-        self.heap[district.cost as usize].push(district);
+        self.start = self.start.min(cost);
+        self.heap[cost as usize].push(district);
     }
-    fn pop(&mut self) -> DistrictMove {
+    fn pop(&mut self) -> (DistrictMove, u16) {
         if self.heap[self.start as usize].is_empty() {
             self.start += self.heap[self.start as usize..]
                 .iter()
                 .position(|v| !v.is_empty())
                 .unwrap() as u16;
         }
-        self.heap[self.start as usize].pop().unwrap()
+        (self.heap[self.start as usize].pop().unwrap(), self.start)
     }
 }
+
 fn solve_file(text: String) -> u16 {
-    use Direction::*;
+    use Axis::*;
     let text = text.as_bytes();
     let width = text.iter().position(|&c| c == b'\n').unwrap() as u8;
     let height = (text.len() as u16 / (width + 1) as u16) as u8;
     let mut visited = bitvec![0;text.len()*2]; // 2 axis
                                                // let mut queue = BinaryHeap::<DistrictMove>::new();
-    let mut queue = MyHeap::new();
-    queue.push(DistrictMove {
-        x: 0,
-        y: 0,
-        cost: 0,
-        direction: Vertical,
-    });
-    queue.push(DistrictMove {
-        x: 0,
-        y: 0,
-        cost: 0,
-        direction: Horizontal,
-    });
+    let mut queue = MyBucketQueue::new();
+    queue.push(
+        DistrictMove {
+            x: 0,
+            y: 0,
+            axis: Vertical,
+        },
+        0,
+    );
+    queue.push(
+        DistrictMove {
+            x: 0,
+            y: 0,
+            axis: Horizontal,
+        },
+        0,
+    );
     loop {
-        let curr_district = queue.pop();
+        let (curr_district, cost) = queue.pop();
         let index = curr_district.x as usize + curr_district.y as usize * (width + 1) as usize;
-        let visited_index = index + curr_district.direction as usize * text.len();
+        let visited_index = index + curr_district.axis as usize * text.len();
         // print_grid(text, index);
         // println!("{:?}", queue);
         // let mut s = String::new();
@@ -104,70 +96,78 @@ fn solve_file(text: String) -> u16 {
         }
         visited.set(visited_index, true);
         if curr_district.x == width - 1 && curr_district.y == height - 1 {
-            return curr_district.cost;
+            return cost;
         }
-        if !matches!(curr_district.direction, Horizontal) {
-            let mut cost = curr_district.cost;
+        if !matches!(curr_district.axis, Horizontal) {
+            let mut cost_sum = cost;
             for jump in 1u8..=10u8 {
                 if curr_district.y >= jump {
-                    cost += (text[index - jump as usize * (width as usize + 1)] - b'0') as u16;
+                    cost_sum += (text[index - jump as usize * (width as usize + 1)] - b'0') as u16;
                     if jump >= 4 {
-                        queue.push(DistrictMove {
-                            x: curr_district.x,
-                            y: curr_district.y - jump,
-                            cost,
-                            direction: Horizontal,
-                        });
+                        queue.push(
+                            DistrictMove {
+                                x: curr_district.x,
+                                y: curr_district.y - jump,
+                                axis: Horizontal,
+                            },
+                            cost_sum,
+                        );
                     }
                 } else {
                     break;
                 }
             }
-            let mut cost = curr_district.cost;
+            let mut cost_sum = cost;
             for jump in 1u8..=10u8 {
                 if curr_district.y + jump < height {
-                    cost += (text[index + jump as usize * (width as usize + 1)] - b'0') as u16;
+                    cost_sum += (text[index + jump as usize * (width as usize + 1)] - b'0') as u16;
                     if jump >= 4 {
-                        queue.push(DistrictMove {
-                            x: curr_district.x,
-                            y: curr_district.y + jump,
-                            cost,
-                            direction: Horizontal,
-                        });
+                        queue.push(
+                            DistrictMove {
+                                x: curr_district.x,
+                                y: curr_district.y + jump,
+                                axis: Horizontal,
+                            },
+                            cost_sum,
+                        );
                     }
                 } else {
                     break;
                 }
             }
         }
-        if !matches!(curr_district.direction, Vertical) {
-            let mut cost = curr_district.cost;
+        if !matches!(curr_district.axis, Vertical) {
+            let mut cost_sum = cost;
             for jump in 1u8..=10u8 {
                 if curr_district.x >= jump {
-                    cost += (text[index - jump as usize] - b'0') as u16;
+                    cost_sum += (text[index - jump as usize] - b'0') as u16;
                     if jump >= 4 {
-                        queue.push(DistrictMove {
-                            x: curr_district.x - jump,
-                            y: curr_district.y,
-                            cost,
-                            direction: Vertical,
-                        });
+                        queue.push(
+                            DistrictMove {
+                                x: curr_district.x - jump,
+                                y: curr_district.y,
+                                axis: Vertical,
+                            },
+                            cost_sum,
+                        );
                     }
                 } else {
                     break;
                 }
             }
-            let mut cost = curr_district.cost;
+            let mut cost_sum = cost;
             for jump in 1u8..=10u8 {
                 if curr_district.x + jump < width {
-                    cost += (text[index + jump as usize] - b'0') as u16;
+                    cost_sum += (text[index + jump as usize] - b'0') as u16;
                     if jump >= 4 {
-                        queue.push(DistrictMove {
-                            x: curr_district.x + jump,
-                            y: curr_district.y,
-                            cost,
-                            direction: Vertical,
-                        });
+                        queue.push(
+                            DistrictMove {
+                                x: curr_district.x + jump,
+                                y: curr_district.y,
+                                axis: Vertical,
+                            },
+                            cost_sum,
+                        );
                     }
                 } else {
                     break;
@@ -184,7 +184,7 @@ mod tests {
     fn solve_test() {
         assert_eq!(
             solve_file(read_to_string("inputs/day17_test.txt").unwrap()),
-            94
+            71
         );
         assert_eq!(
             solve_file(read_to_string("inputs/day17.txt").unwrap()),
