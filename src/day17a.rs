@@ -41,13 +41,44 @@ fn print_grid(text: &[u8], index: usize) {
     });
     println!();
 }
+#[derive(Debug)]
+struct MyHeap {
+    start: u16,
+    heap: Vec<Vec<DistrictMove>>,
+}
+impl MyHeap {
+    fn new() -> MyHeap {
+        MyHeap {
+            heap: Vec::new(),
+            start: 0,
+        }
+    }
+    fn push(&mut self, district: DistrictMove) {
+        if (self.heap.len() as u16) < district.cost + 1 {
+            self.heap.resize_with(district.cost as usize + 1, Vec::new)
+        }
+        self.start = self.start.min(district.cost);
+        self.heap[district.cost as usize].push(district);
+    }
+    fn pop(&mut self) -> DistrictMove {
+        if self.heap[self.start as usize].is_empty() {
+            self.start += self.heap[self.start as usize..]
+                .iter()
+                .position(|v| !v.is_empty())
+                .unwrap() as u16;
+        }
+        self.heap[self.start as usize].pop().unwrap()
+    }
+}
+
 fn solve_file(text: String) -> u16 {
     use Axis::*;
     let text = text.as_bytes();
     let width = text.iter().position(|&c| c == b'\n').unwrap() as u8;
     let height = (text.len() as u16 / (width + 1) as u16) as u8;
     let mut visited = bitvec![0;text.len()*2]; // 2 axis
-    let mut queue = BinaryHeap::<DistrictMove>::new();
+                                               // let mut queue = BinaryHeap::<DistrictMove>::new();
+    let mut queue = MyHeap::new();
     queue.push(DistrictMove {
         x: 0,
         y: 0,
@@ -61,7 +92,7 @@ fn solve_file(text: String) -> u16 {
         axis: Horizontal,
     });
     loop {
-        let curr_district = queue.pop().unwrap();
+        let curr_district = queue.pop();
         let index = curr_district.x as usize + curr_district.y as usize * (width + 1) as usize;
         let visited_index = index + curr_district.axis as usize * text.len();
         // print_grid(text, index);
