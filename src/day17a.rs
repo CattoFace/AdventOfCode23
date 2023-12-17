@@ -145,11 +145,8 @@ mod tests {
     fn solve_test() {
         assert_eq!(
             solve_file(read_to_string("inputs/day17_test.txt").unwrap()),
-            94
+            102
         );
-        assert_eq!(
-            solve_file(read_to_string("inputs/day17.txt").unwrap()),
-            1157
-        );
+        assert_eq!(solve_file(read_to_string("inputs/day17.txt").unwrap()), 936);
     }
 }
