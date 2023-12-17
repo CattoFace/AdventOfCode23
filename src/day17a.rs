@@ -1,6 +1,6 @@
 use bitvec::prelude::*;
 use colored::Colorize;
-use std::{collections::BinaryHeap, fs::read_to_string};
+use std::fs::read_to_string;
 pub fn solve_day() -> u16 {
     solve_file(read_to_string("inputs/day17.txt").unwrap())
 }
