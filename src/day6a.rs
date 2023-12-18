@@ -9,8 +9,8 @@ pub fn solve_day() -> u32 {
 fn solve_race((time, distance): (u32, u32)) -> u32 {
     let inner = ((time * time - 4 * distance) as f32).sqrt();
     let t = time as f32;
-    let f = ((t - inner) / 2f32).next_up().ceil() as u32;
-    let c = ((t + inner) / 2f32).next_down().floor() as u32;
+    let f = (((t - inner) / 2f32) + 0.0001).ceil() as u32;
+    let c = (((t + inner) / 2f32) - 0.0001).floor() as u32;
     c - f + 1
 }
 fn solve_file(file: File) -> u32 {

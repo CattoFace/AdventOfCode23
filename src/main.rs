@@ -1,4 +1,3 @@
-#![feature(float_next_up_down)]
 mod day18b;
 
 #[cfg(feature = "dhat-heap")]
