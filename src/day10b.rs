@@ -253,9 +253,8 @@ fn solve_file(mut text: String) -> u32 {
     pmap.values
         .iter()
         .fold((0u32, false), |(count, inside): (u32, bool), &c: &u8| {
-            let v = c + 1;
             // println!("{},{}", v as char, inside);
-            match v {
+            match c + 1 {
                 b'F' | b'7' | b'|' => (count, !inside),
                 b'L' | b'J' | b'-' => (count, inside),
                 _ => (count + inside as u32, inside),
