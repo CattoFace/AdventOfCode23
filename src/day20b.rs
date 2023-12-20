@@ -183,9 +183,8 @@ mod tests {
     #[test]
     fn solve_test() {
         assert_eq!(
-            solve_file(read_to_string("inputs/day20b_test.txt").unwrap()),
-            32000000
+            solve_file(read_to_string("inputs/day20.txt").unwrap()),
+            240162699605221
         );
-        assert_eq!(solve_file(read_to_string("inputs/day20.txt").unwrap()), 0);
     }
 }
