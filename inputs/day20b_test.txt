@@ -1,6 +1,0 @@
-broadcaster -> aa, bb, cc
-%aa -> bb
-%bb -> rx
-%cc -> in
-&in -> aa
-%rx -> in
