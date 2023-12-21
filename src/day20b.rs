@@ -1,4 +1,4 @@
-use std::fs::read_to_string;
+use std::{collections::VecDeque, fs::read_to_string};
 
 use num::integer::lcm;
 #[derive(Debug)]
@@ -103,9 +103,10 @@ fn signal_broadcast(mut modules: Vec<Module>) -> u64 {
     let mut found = [0u32; 4];
     loop {
         button_presses += 1;
-        let mut signal_queue: Vec<(bool, u16, u16)> = vec![(false, 32 * 32, 32 * 32)];
+        let mut signal_queue: VecDeque<(bool, u16, u16)> = VecDeque::new();
+        signal_queue.push_back((false, 32 * 32, 32 * 32));
         while !signal_queue.is_empty() {
-            let (signal, source, target) = signal_queue.remove(0);
+            let (signal, source, target) = signal_queue.pop_front().unwrap();
             // println!("{} -{} => {}", source, signal, target);
             if found[0] == 0 && signal && source == xj_index {
                 found[0] = button_presses;
@@ -158,7 +159,7 @@ fn signal_broadcast(mut modules: Vec<Module>) -> u64 {
                 continue;
             }
             for output in &module.outputs {
-                signal_queue.push((next_signal, target, *output));
+                signal_queue.push_back((next_signal, target, *output));
             }
         }
     }

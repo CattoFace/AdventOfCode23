@@ -1,4 +1,4 @@
-use std::fs::read_to_string;
+use std::{collections::VecDeque, fs::read_to_string};
 #[derive(Debug)]
 enum ModuleState {
     FlipFlop(FlipFlopState),
@@ -94,9 +94,10 @@ fn parse_modules(mut text: &[u8]) -> Vec<Module> {
 fn signal_broadcast(mut modules: Vec<Module>, press_count: u16) -> u32 {
     let mut signals = [0u32, 0u32]; //low and high signals
     for _ in 0..press_count {
-        let mut signal_queue: Vec<(bool, u16, u16)> = vec![(false, 32 * 32, 32 * 32)];
+        let mut signal_queue: VecDeque<(bool, u16, u16)> = VecDeque::new();
+        signal_queue.push_back((false, 32 * 32, 32 * 32));
         while !signal_queue.is_empty() {
-            let (signal, source, target) = signal_queue.remove(0);
+            let (signal, source, target) = signal_queue.pop_front().unwrap();
             // println!("{} -{} => {}", source, signal, target);
             signals[signal as usize] += 1;
             let module = &mut modules[target as usize];
@@ -119,7 +120,7 @@ fn signal_broadcast(mut modules: Vec<Module>, press_count: u16) -> u32 {
                 continue;
             }
             for output in &module.outputs {
-                signal_queue.push((next_signal, target, *output));
+                signal_queue.push_back((next_signal, target, *output));
             }
         }
     }
