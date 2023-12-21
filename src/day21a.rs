@@ -1,8 +1,8 @@
 use std::{collections::VecDeque, fs::read_to_string};
 
 pub fn solve_day() -> u16 {
-    solve_file(read_to_string("inputs/day21_test2.txt").unwrap(), 6)
-    // solve_file(read_to_string("inputs/day21.txt").unwrap(), 64)
+    // solve_file(read_to_string("inputs/day21_test.txt").unwrap(), 6)
+    solve_file(read_to_string("inputs/day21.txt").unwrap(), 64)
 }
 fn solve_file(text: String, steps: u16) -> u16 {
     let text = text.into_bytes();
