@@ -3,8 +3,8 @@ use std::time::Duration;
 use aoc23::{
     day10a, day10b, day11a, day11b, day12a, day12b, day13a, day13b, day14a, day14b, day15a, day15b,
     day16a, day16b, day17a, day17b, day18a, day18b, day19a, day19b, day1a, day1b, day20a, day20b,
-    day21a, day21b, day2a, day2b, day3a, day3b, day4a, day4b, day5a, day5b, day6a, day6b, day7a,
-    day7b, day8a, day8b, day9a, day9b,
+    day21a, day21b, day22a, day22b, day2a, day2b, day3a, day3b, day4a, day4b, day5a, day5b, day6a,
+    day6b, day7a, day7b, day8a, day8b, day9a, day9b,
 };
 use criterion::{criterion_group, criterion_main, Criterion};
 fn criterion_benchmark(c: &mut Criterion) {
@@ -48,8 +48,10 @@ fn criterion_benchmark(c: &mut Criterion) {
     // c.bench_function("day19b", |b| b.iter(day19b::solve_day));
     // c.bench_function("day20a", |b| b.iter(day20a::solve_day));
     // c.bench_function("day20b", |b| b.iter(day20b::solve_day));
-    c.bench_function("day21a", |b| b.iter(day21a::solve_day));
+    // c.bench_function("day21a", |b| b.iter(day21a::solve_day));
     // c.bench_function("day21b", |b| b.iter(day21b::solve_day));
+    c.bench_function("day22a", |b| b.iter(day22a::solve_day));
+    c.bench_function("day22b", |b| b.iter(day22b::solve_day));
 }
 
 criterion_group! {
