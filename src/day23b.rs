@@ -148,10 +148,21 @@ fn explore_edge(text: &[u8], start_coord: u16, width: u16, mut dir: Dir) -> (Edg
     }
 }
 fn find_longest(graph: Vec<Node>, start: u16, end: u16) -> u16 {
+    let mut sub_end: u16 = 0;
+    let mut end_cost: u16 = 0;
+    'outer: for (node_id, node) in graph.iter().enumerate() {
+        for neigh in &node.neighbours {
+            if neigh.dest == end {
+                sub_end = node_id as u16;
+                end_cost = neigh.cost;
+                break 'outer;
+            }
+        }
+    }
     let mut history = vec![false; graph.len()];
     history[0] = true;
     history[start as usize] = true;
-    find_longest_rec(&graph, &mut history, start, end, 0)
+    find_longest_rec(&graph, &mut history, start, sub_end, end_cost)
 }
 
 fn find_longest_rec(
