@@ -1,4 +1,4 @@
-use std::{cmp::Ordering, collections::VecDeque, fmt::Display, fs::read_to_string};
+use std::{cmp::Ordering, fmt::Display, fs::read_to_string};
 // use std::str;
 
 use itertools::FoldWhile::{Continue, Done};
@@ -18,13 +18,13 @@ struct Brick {
     supported_by: SmallVec<[u16; 8]>,
 }
 fn deep_supporting(bricks: &[Brick], start_id: u16) -> u16 {
-    let mut queue = VecDeque::<u16>::new();
-    queue.push_back(start_id);
+    let mut queue = Vec::new();
+    queue.push(start_id);
     let mut fallen_bricks = Vec::new();
     fallen_bricks.resize(bricks.len() - (start_id - 1) as usize, false);
     fallen_bricks[0] = true;
     let mut fallen_bricks_count = 0u16;
-    while let Some(supported) = queue.pop_back() {
+    while let Some(supported) = queue.pop() {
         let brick = &bricks[(supported - 1) as usize];
         brick.supporting.iter().for_each(|&brick_id| {
             let index = (brick_id - start_id) as usize;
@@ -38,7 +38,7 @@ fn deep_supporting(bricks: &[Brick], start_id: u16) -> u16 {
             {
                 fallen_bricks[index] = true;
                 fallen_bricks_count += 1;
-                queue.push_back(brick_id);
+                queue.push(brick_id);
             }
         });
     }

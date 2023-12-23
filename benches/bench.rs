@@ -9,7 +9,7 @@ use aoc23::{
 use criterion::{criterion_group, criterion_main, Criterion};
 fn criterion_benchmark(c: &mut Criterion) {
     // c.bench_function("day1a", |b| b.iter(day1a::solve_day));
-    // c.bench_function("day1b", |b| b.iter(day1b::solve_day));
+    c.bench_function("day1b", |b| b.iter(day1b::solve_day));
     // c.bench_function("day2a", |b| b.iter(day2a::solve_day));
     // c.bench_function("day2b", |b| b.iter(day2b::solve_day));
     // c.bench_function("day3a", |b| b.iter(day3a::solve_day));
@@ -50,8 +50,8 @@ fn criterion_benchmark(c: &mut Criterion) {
     // c.bench_function("day20b", |b| b.iter(day20b::solve_day));
     // c.bench_function("day21a", |b| b.iter(day21a::solve_day));
     // c.bench_function("day21b", |b| b.iter(day21b::solve_day));
-    c.bench_function("day22a", |b| b.iter(day22a::solve_day));
-    c.bench_function("day22b", |b| b.iter(day22b::solve_day));
+    // c.bench_function("day22a", |b| b.iter(day22a::solve_day));
+    // c.bench_function("day22b", |b| b.iter(day22b::solve_day));
 }
 
 criterion_group! {

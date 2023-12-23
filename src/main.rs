@@ -1,4 +1,4 @@
-mod day22b;
+mod day1b;
 
 #[cfg(feature = "dhat-heap")]
 #[global_allocator]
@@ -9,8 +9,8 @@ fn main() {
     let _profiler = dhat::Profiler::new_heap();
     // let mut ans = 1;
     // for _ in 0..1000 {
-    //     ans = day22b::solve_day()
+    //     ans = day1b::solve_day()
     // }
     // dbg!(&ans);
-    println!("{}", day22b::solve_day());
+    println!("{}", day1b::solve_day());
 }
