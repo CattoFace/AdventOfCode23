@@ -1,4 +1,10 @@
 use std::{fs::read_to_string, ops::Range};
+
+use rayon::{
+    current_num_threads,
+    prelude::{ParallelBridge, ParallelIterator},
+};
+
 #[derive(Debug)]
 struct Line2D {
     m: f32,
@@ -73,16 +79,23 @@ fn parse_text(text: String) -> Vec<Line2D> {
     }
     lines
 }
-fn count_intersections(lines: &[Line2D], range: Range<f32>) -> u64 {
-    let mut count = 0;
-    for i in 0..lines.len() {
-        for j in (i + 1)..lines.len() {
-            count += lines[i].intersection_within(&lines[j], &range) as u64;
-        }
-    }
-    count
+fn count_intersections(lines: &[Line2D], range: Range<f32>) -> usize {
+    (0..current_num_threads())
+        .par_bridge()
+        .map(|thread| {
+            (thread..lines.len())
+                .step_by(current_num_threads())
+                .map(|i| {
+                    lines[i + 1..]
+                        .iter()
+                        .filter(|&line| line.intersection_within(&lines[i], &range))
+                        .count()
+                })
+                .sum::<usize>()
+        })
+        .sum()
 }
-pub fn solve_day() -> u64 {
+pub fn solve_day() -> usize {
     // solve_file(
     //     read_to_string("inputs/day24_test.txt").unwrap(),
     //     7f32..27f32,
@@ -92,7 +105,7 @@ pub fn solve_day() -> u64 {
         200000000000000f32..400000000000000f32,
     )
 }
-fn solve_file(text: String, range: Range<f32>) -> u64 {
+fn solve_file(text: String, range: Range<f32>) -> usize {
     let lines = parse_text(text);
     // println!("{:?}", lines);
     count_intersections(&lines, range)
