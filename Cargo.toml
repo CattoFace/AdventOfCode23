@@ -21,6 +21,9 @@ rayon = "1.8.0"
 regex = "1.10.2"
 smallvec = "1.11.2"
 
+[build]
+rustflags = ["-C", "target-cpu=native"]
+
 [[bench]]
 name = "bench"
 harness = false
@@ -33,10 +36,10 @@ dhat-heap = []
 inherits = "release"
 codegen-units = 1
 lto = true
+panic = "abort"
 
 [profile.bench]
-codegen-units = 1
-lto = true
+inherits = "max"
 
 [profile.dhat]
 inherits = "release"
